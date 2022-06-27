@@ -1,4 +1,4 @@
-import { Controller, Get, HttpException, HttpStatus, Param, ParseIntPipe } from "@nestjs/common";
+import { Body, Controller, Get, HttpException, HttpStatus, Param, ParseIntPipe, Post, Query } from "@nestjs/common";
 import { AppService } from "./app.service";
 
 @Controller()
@@ -6,15 +6,19 @@ export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Get()
-  getHello(): string {
+  public getHello(): string {
     return this.appService.getHello();
+  }
+
+  @Post("")
+  public postHello(@Body() payload: {name:string}): string {
+    return payload.name;
   }
 
   @Get("/test")
   public getTest(): string {
     return "Hola Test";
   }
-
 
   @Get("/param/:id")
   public getParam(@Param("id") id: string): string {
@@ -23,26 +27,67 @@ export class AppController {
   }
 
   @Get("/square/:someParam")
-  public getSquare(@Param("someParam") someParam: number): string{
+  public getSquare(@Param("someParam") someParam: number): string {
     const type = typeof someParam;
     const square = someParam * someParam;
     return `Square of ${someParam} is ${square}`;
   }
 
   @Get("/square/Nan/:someParam")
-  public getSquarePipe(@Param("someParam") someParam: string): string{
+  public getSquarePipe(@Param("someParam") someParam: string): string {
     const someNumber = parseInt(someParam);
-    if(isNaN(someNumber)) throw new HttpException(`${someParam} is not a number`, HttpStatus.BAD_REQUEST);
+    if (isNaN(someNumber)) throw new HttpException(`${someParam} is not a number`, HttpStatus.BAD_REQUEST);
     const type = typeof someNumber;
     const square = someNumber * someNumber;
     return `Square of ${someNumber} of type ${type} is ${square}`;
   }
 
   @Get("/square/pipe/:someParam")
-  public getSquareIntPipe(@Param("someParam", ParseIntPipe) someNumber: number): string{
+  public getSquareIntPipe(@Param("someParam", ParseIntPipe) someNumber: number): string {
     const type = typeof someNumber;
     const square = someNumber * someNumber;
     return `Square of ${someNumber} of type ${type} is ${square}`;
   }
-  
+
+  @Get("/multiply/:someNumber/:otherNumber")
+  public getMultiply(
+    @Param("someNumber", ParseIntPipe) someNumber: number,
+    @Param("otherNumber", ParseIntPipe) otherNumber: number,
+  ): number {
+    const multiply = someNumber * otherNumber;
+    return multiply;
+  }
+
+  @Get("/multiply/query")
+  public getMultiplyQuery(
+    @Query("a", ParseIntPipe) a: number,
+    @Query("b", ParseIntPipe) b: number,
+  ): number {
+    return this.appService.multiply(a, b);
+  }
+
+  @Get("/divide/query")
+  public getDivisionQuery(
+    @Query("dividendo", ParseIntPipe) dividendo: number,
+    @Query("divisor", ParseIntPipe) divisor: number,
+  ): number {
+    try{
+      return this.appService.divide( dividendo, divisor );
+    }catch(error){
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  @Get("/raiz/query")
+  public getRaizQuery(
+    @Query("number", ParseIntPipe) number: number,
+  ): number {
+    try{
+      return this.appService.raiz( number );
+    }catch(error){
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+
 }
