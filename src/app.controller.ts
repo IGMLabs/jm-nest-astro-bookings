@@ -1,5 +1,6 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Param, ParseIntPipe, Post, Query } from "@nestjs/common";
+import { Body, Controller, Get, HttpException, HttpStatus, Param, ParseIntPipe, Post, Query, UseFilters } from "@nestjs/common";
 import { AppService } from "./app.service";
+import { PositiveNumberPipe } from "./core/pipes/positive-number.pipe";
 
 @Controller()
 export class AppController {
@@ -27,8 +28,7 @@ export class AppController {
   }
 
   @Get("/square/:someParam")
-  public getSquare(@Param("someParam") someParam: number): string {
-    const type = typeof someParam;
+  public getSquare(@Param("someParam", PositiveNumberPipe) someParam: number): string {
     const square = someParam * someParam;
     return `Square of ${someParam} is ${square}`;
   }
@@ -67,6 +67,7 @@ export class AppController {
   }
 
   @Get("/divide/query")
+  @UseFilters()
   public getDivisionQuery(
     @Query("dividendo", ParseIntPipe) dividendo: number,
     @Query("divisor", ParseIntPipe) divisor: number,
