@@ -26,10 +26,3 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
----
-
-<footer>
-  <h3>By Alberto Basalo</h3>
-  <p >
-   <a href="https://twitter.com/albertobasalo" target="blank"><img src="https://img.shields.io/twitter/follow/albertobasalo?logo=twitter&style=for-the-badge" alt="albertobasalo" /></a>
-</footer>
