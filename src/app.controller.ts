@@ -1,12 +1,8 @@
-<<<<<<< HEAD
-import { Body, Controller, Get, HttpException, HttpStatus, Param, ParseIntPipe, Post, Query, UseFilters } from "@nestjs/common";
+import { Body, Controller, Get, HttpException, HttpStatus, Param, ParseIntPipe, Post, Put, Query, UseFilters, ValidationPipe } from "@nestjs/common";
 import { AppService } from "./app.service";
 import { PositiveNumberPipe } from "./core/pipes/positive-number.pipe";
-=======
-import { Body, Controller, Get, Put, HttpException, HttpStatus, Param, ParseIntPipe, Post, Query } from "@nestjs/common";
-import { AppService } from "./app.service";
-import { Client } from "./client.interface";
->>>>>>> f458ec752174f4516c3cc313b3cc223a6734f140
+import { ClientDto } from "./models/client.dto";
+import { Client } from "./models/client.interface";
 
 @Controller()
 export class AppController {
@@ -104,7 +100,15 @@ export class AppController {
   }
 
   @Post("client")
-  public postClient(@Body() payload: Client): Client {
+  public postClient(
+    @Body(
+      new ValidationPipe({
+        whitelist: true,
+        forbidNonWhitelisted: true,
+      }),
+    )
+    payload: ClientDto,
+  ): Client {
     return this.appService.saveClient(payload);
   }
 
