@@ -1,8 +1,8 @@
 import { Body, Controller, Get, Param, Post, UseGuards, ValidationPipe } from "@nestjs/common";
-import { Agency } from "src/models/agency.interface";
 import { AgencyDto } from "src/models/create-agency.dto";
 import { AgenciesService } from "./agencies.service";
 import { ApiKeyGuard } from "./api-key.guard";
+import { Agency } from "./dto/agency.entity";
 
 @Controller("agencies")
 @UseGuards(ApiKeyGuard)
@@ -10,17 +10,17 @@ export class AgenciesController {
   constructor(private readonly agenciesService: AgenciesService) {}
 
   @Get()
-  getAll(): Agency[] {
-    return this.agenciesService.selectAll();
+  public async getAll(): Promise<Agency[]> {
+    return await this.agenciesService.selectAll();
   }
 
   @Get("/:id")
-  getById(@Param("id") id: string) {
-    return this.agenciesService.findById(id);
+  public async getById(@Param("id") id: string): Promise<Agency> {
+    return await this.agenciesService.findById(id);
   }
 
   @Post()
-  postAgency(
+  public async postAgency(
     @Body(
       new ValidationPipe({
         whitelist: true,
@@ -28,7 +28,7 @@ export class AgenciesController {
       }),
     )
     agency: AgencyDto,
-  ): Agency {
-    return this.agenciesService.insert(agency);
+  ): Promise<Agency> {
+    return await this.agenciesService.insert(agency);
   }
 }
