@@ -1,4 +1,5 @@
 import { Injectable } from "@nestjs/common";
+import { JwtService } from "@nestjs/jwt";
 import { UtilsService } from "src/core/utils/utils.service";
 import { Credentials } from "./models/credentials.interface";
 import { LoginDto } from "./models/login.dto";
@@ -9,7 +10,7 @@ import { User } from "./models/user.interface";
 export class AuthService {
   private readonly users: User[] = [];
 
-  constructor(private readonly utilsService: UtilsService) {}
+  constructor(private readonly utilsService: UtilsService, private readonly jwtService: JwtService) {}
 
   public register(registration: RegistrationDto): Credentials {
     const user: User = {
@@ -39,7 +40,8 @@ export class AuthService {
     const payload = {
       sub: user.id,
     };
-    return JSON.stringify(payload);
+    const jwtConfig = {expiresIn: "5m", secret: "my-secret"};
+    return JSON.stringify(payload, jwtConfig);
     // return this.jwtService.sign(payload, { expiresIn: "5m", secret: "secret" });
   }
 }
