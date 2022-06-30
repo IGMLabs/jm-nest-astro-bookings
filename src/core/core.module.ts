@@ -12,11 +12,11 @@ const mongoHost = "localhost:27017";
 const mongoDB = "nest";
 const mongoUri = `mongodb://${mongoUser}:${mongoPass}@${mongoHost}/${mongoDB}?authSource=admin`;
 
-
 @Module({
   imports: [
     ThrottlerModule.forRoot({ttl: 60, limit: 10}),
-    MongooseModule.forRoot(mongoUri)],
+    MongooseModule.forRoot(mongoUri)
+  ],
   providers: [UtilsService,
     {
       provide: APP_PIPE,
@@ -32,8 +32,8 @@ const mongoUri = `mongodb://${mongoUser}:${mongoPass}@${mongoHost}/${mongoDB}?au
   exports: [UtilsService]
 })
 export class CoreModule {
-    public configure(consumer: MiddlewareConsumer){
-        consumer.apply(MonitorMiddleware).forRoutes("*");
-        consumer.apply(helmet()).forRoutes("*");
-    }
+  public configure(consumer: MiddlewareConsumer){
+    consumer.apply(MonitorMiddleware).forRoutes("*");
+    consumer.apply(helmet()).forRoutes("*");
+  }
 }

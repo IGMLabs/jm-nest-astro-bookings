@@ -31,7 +31,6 @@ export class AuthService {
   }
 
   public async login(login: LoginDto): Promise<Credentials> {
-    // const user: User = this.users.find((u) => u.email === login.email && u.password === login.password);
     const user: User = await this.userModel.findOne(login);
     if (!user) throw new Error("Invalid credentials");
     return this.buildCredentials(user);
