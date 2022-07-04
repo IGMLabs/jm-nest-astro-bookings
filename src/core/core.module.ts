@@ -13,7 +13,7 @@ const mongoHost = "localhost:27017";
 const mongoDB = "nest";
 const mongoUri = `mongodb://${mongoUser}:${mongoPass}@${mongoHost}/${mongoDB}?authSource=admin`;
 
-<<<<<<< HEAD
+
 const postgresOptions: TypeOrmModuleOptions = {
   type: 'postgres',
   host: 'localhost',
@@ -26,18 +26,10 @@ const postgresOptions: TypeOrmModuleOptions = {
 
 };
 
-
-@Module({
-  imports: [
-    ThrottlerModule.forRoot({ttl: 60, limit: 10}),
-    MongooseModule.forRoot(mongoUri),
-    TypeOrmModule.forRoot(postgresOptions)
-=======
 @Module({
   imports: [
     ThrottlerModule.forRoot({ttl: 60, limit: 10}),
     MongooseModule.forRoot(mongoUri)
->>>>>>> 3e554f5e42de031ad278496768888cd3b3bb67e6
   ],
   providers: [UtilsService,
     {
