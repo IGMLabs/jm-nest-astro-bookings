@@ -26,7 +26,10 @@ export class TripsService {
   }
 
   async findOne(id: string) {
-    const trip = await this.tripRepository.findOneBy({ id: id });
+    const trip = await this.tripRepository.findOne({
+      where: { id: id },
+      relations: { bookings: true },
+    });
     if (!trip) throw new EntityNotFoundError(Trip, id);
     return trip;
   }

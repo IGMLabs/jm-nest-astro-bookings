@@ -1,5 +1,6 @@
 import { Trip } from "src/trips/entities/trip.entity";
-import { Column, Entity, ManyToOne, PrimaryColumn } from "typeorm";
+import { Column, Entity, ManyToOne, OneToOne, PrimaryColumn } from "typeorm";
+import { Payment } from "./payment.entity";
 
 @Entity("bookings")
 export class Booking {
@@ -20,4 +21,7 @@ export class Booking {
 
     @Column({ nullable: true })
     updatedAt: Date;
+
+    @OneToOne(() => Payment, (payment) => payment.booking, {eager: true, cascade: true})
+    payment: Payment;
 }

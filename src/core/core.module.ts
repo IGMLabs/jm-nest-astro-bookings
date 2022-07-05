@@ -1,11 +1,11 @@
-import { MiddlewareConsumer, Module, ValidationPipe } from '@nestjs/common';
-import { APP_GUARD, APP_PIPE } from '@nestjs/core';
-import { MonitorMiddleware } from './middlewares/monitor.middleware';
-import { UtilsService } from './utils/utils.service';
-import helmet from 'helmet';
-import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
-import { MongooseModule } from '@nestjs/mongoose';
-import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { MiddlewareConsumer, Module, NestModule, ValidationPipe } from "@nestjs/common";
+import { APP_GUARD, APP_PIPE } from "@nestjs/core";
+import { MongooseModule } from "@nestjs/mongoose";
+import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
+import { TypeOrmModule, TypeOrmModuleOptions } from "@nestjs/typeorm";
+import helmet from "helmet";
+import { MonitorMiddleware } from "./middlewares/monitor.middleware";
+import { UtilsService } from "./utils/utils.service";
 
 const mongoUser = "nest_user";
 const mongoPass = "nest_password";
@@ -13,25 +13,25 @@ const mongoHost = "localhost:27017";
 const mongoDB = "nest";
 const mongoUri = `mongodb://${mongoUser}:${mongoPass}@${mongoHost}/${mongoDB}?authSource=admin`;
 
-
 const postgresOptions: TypeOrmModuleOptions = {
-  type: 'postgres',
-  host: 'localhost',
+  type: "postgres",
+  host: "localhost",
   port: 5432,
-  username: 'nest_user',
-  password: 'nest_password',
-  database: 'nest',
+  username: "nest_user",
+  password: "nest_password",
+  database: "nest",
   autoLoadEntities: true,
-  synchronize: true
-
+  synchronize: true,
 };
 
 @Module({
   imports: [
-    ThrottlerModule.forRoot({ttl: 60, limit: 10}),
-    MongooseModule.forRoot(mongoUri)
+    ThrottlerModule.forRoot({ ttl: 60, limit: 10 }),
+    MongooseModule.forRoot(mongoUri),
+    TypeOrmModule.forRoot(postgresOptions),
   ],
-  providers: [UtilsService,
+  providers: [
+    UtilsService,
     {
       provide: APP_PIPE,
       useValue: new ValidationPipe({
@@ -42,12 +42,13 @@ const postgresOptions: TypeOrmModuleOptions = {
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
-    },],
-  exports: [UtilsService]
+    },
+  ],
+  exports: [UtilsService],
 })
-export class CoreModule {
-  public configure(consumer: MiddlewareConsumer){
-    consumer.apply(MonitorMiddleware).forRoutes("*");
+export class CoreModule implements NestModule {
+  public configure(consumer: MiddlewareConsumer) {
     consumer.apply(helmet()).forRoutes("*");
+    consumer.apply(MonitorMiddleware).forRoutes("*");
   }
 }
