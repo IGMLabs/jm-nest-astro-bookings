@@ -28,17 +28,12 @@ export class AgenciesService {
   }
 
   async create(createAgency: AgencyDto): Promise<Agency> {
-    try {
-      console.debug(createAgency);
-      const agency = await this.agencyModel.create({
-        ...createAgency,
-        id: this.utilsService.createGUID(),
-      });
-      await agency.save();
-      return agency;
-    } catch(err){
-      console.debug(err);
-    }
+    const agency = await this.agencyModel.create({
+      ...createAgency,
+      id: this.utilsService.createGUID(),
+    });
+    await agency.save();
+    return agency;
 
   }
 
