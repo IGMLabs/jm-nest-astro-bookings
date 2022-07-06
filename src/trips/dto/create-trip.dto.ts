@@ -1,6 +1,11 @@
-import { IsDateString, IsNotEmpty, IsNumber, IsString } from "class-validator";
+import { IsDateString, IsNotEmpty, IsNumberString, IsString } from "class-validator";
 
 export class CreateTripDto {
+
+    @IsString()
+    @IsNotEmpty()
+    agencyId: string;
+
     @IsString()
     @IsNotEmpty()
     destination: string;
@@ -11,9 +16,9 @@ export class CreateTripDto {
     @IsDateString()
     endDate: Date;
 
-    @IsNumber()
-    price: number;
+    @IsNumberString()
+    flightPrice: number;
 
-    @IsNumber()
+    @IsNumberString()
     places: number;
 }

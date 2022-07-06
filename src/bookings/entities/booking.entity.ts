@@ -10,8 +10,14 @@ export class Booking {
     @ManyToOne(() => Trip)
     trip: Trip;
 
-    @Column({nullable: false})
-    client: string;
+    @Column({nullable: true})
+    passengerName: string;
+
+    @Column({type: "int", nullable: true})
+    luggageKilos: number;
+
+    @Column({type: "boolean", nullable: true})
+    hasPremiumFoodPrice: boolean;
 
     @Column({type: "int", default: 1})
     passengers: number;

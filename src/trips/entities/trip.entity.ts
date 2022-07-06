@@ -6,6 +6,11 @@ export class Trip {
   @PrimaryColumn()
   id: string;
 
+
+  //nullable mientra no se resetee la BD
+  @Column( {nullable: true} )
+  agencyId: string;
+
   @Column()
   destination: string;
 
@@ -15,8 +20,9 @@ export class Trip {
   @Column({ type: "date", nullable: true })
   endDate: Date;
 
-  @Column({ type: "decimal" })
-  price: number;
+  //nullable mientra no se resetee la BD
+  @Column({ type: "decimal", nullable: true  })
+  flightPrice: number;
 
   @Column({ type: "int", default: 10 })
   places: number;

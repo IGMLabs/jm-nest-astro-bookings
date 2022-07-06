@@ -75,7 +75,7 @@ export class BookingsService {
   }
 
   private processPayment(booking: Booking, payment: Payment){
-    const price = booking.trip.price * booking.passengers;
+    const price = booking.trip.flightPrice * booking.passengers;
     if(price > payment.amount) throw new Error("BUSINESS: Not enough money");
     booking.payment = payment;
     booking.id = this.utilsService.createGUID();

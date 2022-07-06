@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber, IsString } from "class-validator";
+import { IsBoolean, IsBooleanString, IsNotEmpty, IsNumber, IsNumberString, IsString } from "class-validator";
 
 export class CreateBookingDto {
     @IsString()
@@ -7,10 +7,16 @@ export class CreateBookingDto {
 
     @IsString()
     @IsNotEmpty()
-    client: string;
+    passengerName: string;
 
-    @IsNumber()
-    passengers?: number;
+    @IsNumberString()
+    luggageKilos: number;
+
+    @IsBoolean()
+    hasPremiumFoodPrice: boolean;
+
+    @IsNumberString()
+    passengers: number;
 }
 
 export class CreatePaymentDto {

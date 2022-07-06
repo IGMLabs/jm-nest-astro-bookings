@@ -5,4 +5,10 @@ export class AgencyDto implements Partial<Agency> {
   @IsNotEmpty()
   @IsString()
   name: string;
+
+  @IsString()
+  range: string;
+
+  @IsString()
+  status: string;
 }
