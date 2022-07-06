@@ -57,9 +57,10 @@ export class BookingsService {
     const payment: Payment = this.paymentsRepository.create(createPaymentDto);
     try {
       await queryRunner.startTransaction();
-      const booking: Booking = await this.bookingsRepository.findOneBy({ id: createPaymentDto.bookingId });
-      booking.payment = true;
-      this.checkPayment(booking, payment);
+      const booking: Booking = await this.bookingsRepository.findOneBy([{ id: createPaymentDto.bookingId }]);
+      //this.processPayment(booking, payment);
+      payment.id = this.utilsService.createGUID();
+      booking.payment = payment;
       await this.bookingsRepository.save(booking);
       await this.paymentsRepository.save(payment);
       await queryRunner.commitTransaction();
@@ -73,24 +74,37 @@ export class BookingsService {
     return;
   }
 
-  private checkPayment(booking: Booking, payment: Payment){
-    const price = booking.trip.price;
+  private processPayment(booking: Booking, payment: Payment){
+    const price = booking.trip.price * booking.passengers;
     if(price > payment.amount) throw new Error("BUSINESS: Not enough money");
+    booking.payment = payment;
+    booking.id = this.utilsService.createGUID();
   }
 
-  findAll() {
-    return `This action returns all bookings`;
+  async findAll() {
+    return await this.bookingsRepository.find({ relations: {trip: true}});
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} booking`;
+  async findOne(id: string) {
+    const booking = await this.bookingsRepository.findOne({
+      where: { id: id },
+      relations: { payment: true },
+    });
+    if (!booking) throw new EntityNotFoundError(Booking, id);
+    return booking;
   }
 
-  update(id: number, updateBookingDto: UpdateBookingDto) {
-    return `This action updates a #${id} booking`;
+  async update(id: string, updateBookingDto: UpdateBookingDto) {
+    const booking = await this.findOne(id);
+    const updated = {
+      ...booking,
+      ...updateBookingDto,
+    };
+    return await this.bookingsRepository.save(updated);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} booking`;
+  async remove(id: string) {
+    const booking = await this.findOne(id);
+    return await this.bookingsRepository.remove(booking);
   }
 }

@@ -1,7 +1,8 @@
 import { ArgumentsHost, Catch, ExceptionFilter, HttpStatus } from "@nestjs/common";
 import { Request, Response } from "express";
+import { MongoError } from "typeorm";
 
-@Catch()
+@Catch(MongoError)
 export class MongodbErrorFilter<MongoError> implements ExceptionFilter {
   public catch(exception: MongoError, host: ArgumentsHost) {
     const { request, response } = this.getExpressData(host);

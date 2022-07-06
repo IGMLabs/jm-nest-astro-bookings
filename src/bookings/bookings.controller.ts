@@ -1,9 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseFilters } from '@nestjs/common';
+import { PostgresErrorFilter } from 'src/core/filters/postgres-error.filter';
 import { BookingsService } from './bookings.service';
 import { CreateBookingDto, CreatePaymentDto } from './dto/create-booking.dto';
 import { UpdateBookingDto } from './dto/update-booking.dto';
 
 @Controller('bookings')
+@UseFilters(PostgresErrorFilter)
 export class BookingsController {
   constructor(private readonly bookingsService: BookingsService) {}
 
@@ -24,16 +26,16 @@ export class BookingsController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.bookingsService.findOne(+id);
+    return this.bookingsService.findOne(id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateBookingDto: UpdateBookingDto) {
-    return this.bookingsService.update(+id, updateBookingDto);
+    return this.bookingsService.update(id, updateBookingDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.bookingsService.remove(+id);
+    return this.bookingsService.remove(id);
   }
 }

@@ -6,7 +6,7 @@ export class Payment {
     @PrimaryColumn()
     id: string;
 
-    @OneToOne(() => Booking, (booking)=> booking.payment, {eager: true})
+    @OneToOne(() => Booking, (booking: Booking)=> booking.payment)
     booking: Booking;
 
     @Column({nullable: false})
